@@ -5,8 +5,11 @@ const scrollLeftButton = document.getElementById('prev');
 const scrollRightButton = document.getElementById('next');
 const scrollAmount = 300;
 
+// List of allowed project names
+const allowedProjectNames = ['GatorFound', 'SportsBetAI','HackGT_WAYD', 'Osana-Voice-Assistant', 'HelpingSoup-Website','ASP.NET-Core-and-MVC-Test-Application','Sudoku-in-Python','SimpleMeetingJoinBot'];
+
 async function fetchProjects() {
-    const response = await fetch('https://api.github.com/users/PrakharDoneria/repos');
+    const response = await fetch('https://api.github.com/users/ShreyasKodela/repos');
     const projects = await response.json();
     projects.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     displayProjects(projects);
@@ -15,23 +18,34 @@ async function fetchProjects() {
 function displayProjects(projects) {
     projectList.innerHTML = '';
     projects.forEach(project => {
-        const projectItem = document.createElement('div');
-        projectItem.className = 'project-item';
-        projectItem.innerHTML = `
-            <h3>${project.name}</h3>
-            <p>${project.description || 'No description available.'}</p>
-            <a href="${project.html_url}" target="_blank" class="view-project">View Project</a>
-        `;
-        projectList.appendChild(projectItem);
+        // Only display projects that are in the allowedProjectNames array
+        if (allowedProjectNames.includes(project.name)) {
+            const projectItem = document.createElement('div');
+            projectItem.className = 'project-item';
+            projectItem.innerHTML = `
+                <h3>${project.name}</h3>
+                <p style="width: 300px; white-space: pre-wrap; overflow-wrap: break-word;">${project.description || 'No description available.'}</p>
+                <a href="${project.html_url}" target="_blank" class="view-project">View Project</a>
+            `;
+            projectList.appendChild(projectItem);
+        }
     });
 }
 
 function handleScroll(direction) {
-    scrollContainer.scrollBy({
-        left: direction * scrollAmount,
+    const maxScrollLeft = projectList.scrollWidth - projectList.clientWidth;
+    let newScrollPosition = projectList.scrollLeft + direction * scrollAmount;
+    newScrollPosition = Math.max(0, Math.min(newScrollPosition, maxScrollLeft));
+
+    projectList.scrollTo({
+        left: newScrollPosition,
         behavior: 'smooth'
     });
 }
+
+scrollLeftButton.addEventListener('click', () => handleScroll(-1));
+scrollRightButton.addEventListener('click', () => handleScroll(1));
+
 
 scrollLeftButton.addEventListener('click', () => handleScroll(-1));
 scrollRightButton.addEventListener('click', () => handleScroll(1));

@@ -24,7 +24,7 @@ function displayProjects(projects) {
             projectItem.className = 'project-item';
             projectItem.innerHTML = `
                 <h3>${project.name}</h3>
-                <p style="width: 300px; white-space: pre-wrap; overflow-wrap: break-word; overflow: hidden;">${project.description || 'No description available.'}</p>
+                <p style="width: 100%; white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; overflow: hidden;">${project.description || 'No description available.'}</p>
                 <a href="${project.html_url}" target="_blank" class="view-project">View Project</a>
             `;
             projectList.appendChild(projectItem);
